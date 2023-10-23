@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Heading } from "@radix-ui/themes";
+import { Heading, Link, Text } from "@radix-ui/themes";
 
 export default function Home() {
   return (
@@ -7,6 +7,13 @@ export default function Home() {
       <Heading size={"8"} as={"h1"} mb={"4"}>
         Resources
       </Heading>
+      <ol>
+        <li>
+          <Link href={"./todolist"}>Todo App</Link>
+        </li>
+      </ol>
+      <br />
+      <Text>More coming soon ;)</Text>
     </main>
   );
 }
