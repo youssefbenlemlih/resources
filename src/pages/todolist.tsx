@@ -20,6 +20,8 @@ import {
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
 
+import { AnimatePresence, motion } from "framer-motion";
+
 type TodoItem = {
   text: string;
   checked: boolean;
@@ -139,7 +141,7 @@ export default function Home() {
   const onDeleted = (index: number) => {
     todos.splice(index, 1);
     setTodos([...todos]);
-    setSelectedId(todos[index - 1]?.id);
+    selectedId && setSelectedId(todos[index - 1]?.id);
   };
 
   const onDragEnd: OnDragEndResponder = ({ destination, source }) => {
@@ -167,32 +169,40 @@ export default function Home() {
         <Droppable droppableId={"droppable"}>
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
-              {todos.map((todo, index) => (
-                <Draggable key={todo.id} index={index} draggableId={todo.id}>
-                  {(provided) => (
-                    <div ref={provided.innerRef} {...provided.draggableProps}>
-                      <Todo
-                        todo={todo}
-                        onTextChange={(text) => onTextChange(index, text)}
-                        onCheckedChange={(checked) =>
-                          onCheckedChange(index, checked)
-                        }
-                        onSubmit={() => onSubmit(index)}
-                        onDelete={() => onDeleted(index)}
-                        dragHandleProps={provided.dragHandleProps}
-                        selected={selectedId === todo.id}
-                        onFocusChange={(focused) => {
-                          if (!focused && selectedId === todo.id) {
-                            setSelectedId(undefined);
-                          } else {
-                            setSelectedId(todo.id);
+              <AnimatePresence>
+                {todos.map((todo, index) => (
+                  <Draggable key={todo.id} index={index} draggableId={todo.id}>
+                    {(provided) => (
+                      <motion.div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                      >
+                        <Todo
+                          todo={todo}
+                          onTextChange={(text) => onTextChange(index, text)}
+                          onCheckedChange={(checked) =>
+                            onCheckedChange(index, checked)
                           }
-                        }}
-                      />
-                    </div>
-                  )}
-                </Draggable>
-              ))}
+                          onSubmit={() => onSubmit(index)}
+                          onDelete={() => onDeleted(index)}
+                          dragHandleProps={provided.dragHandleProps}
+                          selected={selectedId === todo.id}
+                          onFocusChange={(focused) => {
+                            if (!focused && selectedId === todo.id) {
+                              setSelectedId(undefined);
+                            } else {
+                              setSelectedId(todo.id);
+                            }
+                          }}
+                        />
+                      </motion.div>
+                    )}
+                  </Draggable>
+                ))}
+              </AnimatePresence>
               {provided.placeholder}
             </div>
           )}
