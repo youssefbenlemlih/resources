@@ -38,7 +38,7 @@ type TodoProps = {
   onFocusChange: (focused: boolean) => void;
 };
 const Todo = ({
-  todo: { text, checked, id },
+  todo: { text, checked },
   onTextChange,
   onDelete,
   onCheckedChange,
@@ -64,12 +64,15 @@ const Todo = ({
         />
       </div>
       <Checkbox onCheckedChange={onCheckedChange} checked={checked} />
-      <TextField.Root className={"flex-1 max-w-[50%] "}>
+      <TextField.Root
+        onBlurCapture={onBlurCapture}
+        className={"flex-1 max-w-[50%] "}
+        onFocusCapture={() => onFocusChange(true)}
+        tabIndex={0}
+      >
         {selected ? (
           <TextField.Input
             autoFocus={true}
-            tabIndex={0}
-            onBlurCapture={onBlurCapture}
             placeholder="New todo"
             value={text}
             onChange={(e) => onTextChange(e.target.value)}
@@ -89,10 +92,7 @@ const Todo = ({
           />
         ) : (
           <Text
-            placeholder={"My todo"}
-            onFocusCapture={() => onFocusChange(true)}
             className={checked ? "line-through text-gray-500" : ""}
-            tabIndex={0}
             size="2"
           >
             {text}
