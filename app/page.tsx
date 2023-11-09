@@ -3,17 +3,17 @@ import { Heading, Link, Text } from "@radix-ui/themes";
 
 export default function Home() {
   return (
-    <main className={`[&>*]:mb-2 p-24 `}>
+    <div className={`[&>*]:mb-2 `}>
       <Heading size={"8"} as={"h1"} mb={"4"}>
         Resources
       </Heading>
-      <ol>
+      <ul>
         <li>
           <Link href={"./todolist"}>Todo App</Link>
         </li>
-      </ol>
+      </ul>
       <br />
       <Text>More coming soon ;)</Text>
-    </main>
+    </div>
   );
 }

@@ -1,122 +1,25 @@
-"use client"
+"use client";
 import * as React from "react";
 import { useState } from "react";
-import {
-  Button,
-  Checkbox,
-  Flex,
-  Heading,
-  IconButton,
-  Text,
-  TextField,
-} from "@radix-ui/themes";
+import { Button, Heading } from "@radix-ui/themes";
 import { v4 as uuid } from "uuid";
 
-import { GripVertical, PlusIcon, Trash2 } from "lucide-react";
-import {
-  DragDropContext,
-  Draggable,
-  DraggableProvidedDragHandleProps,
-  Droppable,
-  OnDragEndResponder,
-} from "@hello-pangea/dnd";
+import { PlusIcon } from "lucide-react";
+import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from "@hello-pangea/dnd";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { Todo } from "./todo";
+import { TodoItem } from "./todoItem";
 
-type TodoItem = {
-  text: string;
-  checked: boolean;
-  id: string;
-};
-type TodoProps = {
-  todo: TodoItem;
-  onTextChange: (newText: string) => void;
-  onCheckedChange: (newChecked: boolean) => void;
-  onDelete: () => void;
-  onSubmit: () => void;
-  dragHandleProps: DraggableProvidedDragHandleProps | null;
-  selected: boolean;
-  onFocusChange: (focused: boolean) => void;
-};
-const Todo = ({
-  todo: { text, checked },
-  onTextChange,
-  onDelete,
-  onCheckedChange,
-  dragHandleProps,
-  onSubmit,
-  selected,
-  onFocusChange,
-}: TodoProps) => {
-  const onBlurCapture = () => {
-    if (!text) {
-      onDelete();
-    } else {
-      onFocusChange(false);
-    }
-  };
-  return (
-    <Flex gap="2" className={"relative items-center group -ml-8 "}>
-      <div {...dragHandleProps}>
-        <GripVertical
-          width="18"
-          height="18"
-          className={"opacity-0 group-hover:opacity-100"}
-        />
-      </div>
-      <Checkbox onCheckedChange={onCheckedChange} checked={checked} />
-      <TextField.Root
-        onBlurCapture={onBlurCapture}
-        className={"flex-1 max-w-[50%] "}
-        onFocusCapture={() => onFocusChange(true)}
-        tabIndex={0}
-      >
-        {selected ? (
-          <TextField.Input
-            autoFocus={true}
-            placeholder="New todo"
-            value={text}
-            onChange={(e) => onTextChange(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.code === "Enter") {
-                if (!text) {
-                  onDelete();
-                } else {
-                  onFocusChange(false);
-                  onSubmit();
-                }
-              }
-              if (e.code === "Backspace" && text === "") {
-                onDelete();
-              }
-            }}
-          />
-        ) : (
-          <Text
-            className={checked ? "line-through text-gray-500" : ""}
-            size="2"
-          >
-            {text}
-          </Text>
-        )}
-      </TextField.Root>
-      <IconButton
-        variant={"outline"}
-        className={"cursor-pointer opacity-0 group-hover:opacity-100 "}
-      >
-        <Trash2 onClick={onDelete} width="18" height="18" />
-      </IconButton>
-    </Flex>
-  );
-};
-const reorder = <T,>(list: T[], startIndex: number, endIndex: number) => {
+
+const reorder = <T, >(list: T[], startIndex: number, endIndex: number) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
 
   return result;
 };
-export default function Home() {
+export default function TodosPage() {
   const [selectedId, setSelectedId] = useState<string>();
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const addTodo = () => {
@@ -162,7 +65,7 @@ export default function Home() {
   }
 
   return (
-    <main className={`[&>*]:mb-2 p-24 `}>
+    <div className={`[&>*]:mb-2`}>
       <Heading size={"8"} as={"h1"} mb={"4"}>
         Todos
       </Heading>
@@ -213,6 +116,6 @@ export default function Home() {
         <PlusIcon width="16" height="16" />
         Add Todo
       </Button>
-    </main>
+    </div>
   );
 }

@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+ul {
+    @apply list-disc
+}
+
+ol {
+    @apply list-decimal
+}
+
+li {
+    @apply ml-4
+}
