@@ -1,0 +1,15 @@
+.gitignore
+.npmignore
+.openapi-generator-ignore
+README.md
+package.json
+src/apis/TodosControllerApi.ts
+src/apis/index.ts
+src/index.ts
+src/models/CreateTodoRequest.ts
+src/models/CreateTodoResponse.ts
+src/models/GetTodosResponse.ts
+src/models/TodoResponse.ts
+src/models/index.ts
+src/runtime.ts
+tsconfig.json
