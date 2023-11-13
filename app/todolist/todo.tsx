@@ -1,86 +1,87 @@
-import { Checkbox, Flex, IconButton, Text, TextField } from "@radix-ui/themes";
-import { GripVertical, Trash2 } from "lucide-react";
-import * as React from "react";
 import { TodoItem } from "./todoItem";
+import { Checkbox, Flex, IconButton, Text, TextField } from "@radix-ui/themes";
+import * as React from "react";
+import { GripVertical, Trash2 } from "lucide-react";
 import { DraggableProvidedDragHandleProps } from "@hello-pangea/dnd";
 
-export type TodoProps = {
+type TodoProps = {
   todo: TodoItem;
+  onCheckedChange: () => void;
   onTextChange: (newText: string) => void;
-  onCheckedChange: (newChecked: boolean) => void;
-  onDelete: () => void;
-  onSubmit: () => void;
-  dragHandleProps: DraggableProvidedDragHandleProps | null;
-  selected: boolean;
+  focused: boolean;
   onFocusChange: (focused: boolean) => void;
+  onDelete: () => void;
+  dragHandleProps: DraggableProvidedDragHandleProps | null;
+  onInsert: () => void;
 };
 export const Todo = ({
-                       todo: { text, checked },
-                       onTextChange,
-                       onDelete,
-                       onCheckedChange,
-                       dragHandleProps,
-                       onSubmit,
-                       selected,
-                       onFocusChange,
-                     }: TodoProps) => {
-  const onBlurCapture = () => {
-    if (!text) {
-      onDelete();
-    } else {
-      onFocusChange(false);
-    }
-  };
+  todo: { checked, text },
+  onTextChange,
+  onCheckedChange,
+  focused,
+  onFocusChange,
+  dragHandleProps,
+  onDelete,
+  onInsert,
+}: TodoProps) => {
   return (
-    <Flex gap="2" className={"relative items-center group -ml-8 "}>
-      <div {...dragHandleProps}>
-        <GripVertical
-          width="18"
-          height="18"
-          className={"opacity-0 group-hover:opacity-100"}
-        />
-      </div>
-      <Checkbox onCheckedChange={onCheckedChange} checked={checked} />
-      <TextField.Root
-        onBlurCapture={onBlurCapture}
-        className={"flex-1 max-w-[50%] "}
-        onFocusCapture={() => onFocusChange(true)}
-        tabIndex={0}
-      >
-        {selected ? (
-          <TextField.Input
-            autoFocus={true}
-            placeholder="New todo"
-            value={text}
-            onChange={(e) => onTextChange(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.code === "Enter") {
-                if (!text) {
-                  onDelete();
-                } else {
-                  onFocusChange(false);
-                  onSubmit();
-                }
-              }
-              if (e.code === "Backspace" && text === "") {
-                onDelete();
-              }
-            }}
+    <Flex
+      className={"group -ml-4"}
+      align={"center"}
+      gap={"2"}
+      justify={"between"}
+    >
+      <Flex align={"center"} gap={"2"}>
+        <div {...dragHandleProps}>
+          <GripVertical
+            className={"group-hover:opacity-100 opacity-0"}
+            width={"16"}
+            height={"16"}
           />
-        ) : (
-          <Text
-            className={checked ? "line-through text-gray-500" : ""}
-            size="2"
-          >
-            {text}
-          </Text>
-        )}
-      </TextField.Root>
+        </div>
+        <Checkbox onCheckedChange={() => onCheckedChange()} checked={checked} />
+        <TextField.Root
+          onFocus={() => onFocusChange(true)}
+          onBlurCapture={() => {
+            if (!text) {
+              onDelete();
+            } else {
+              onFocusChange(false);
+            }
+          }}
+          tabIndex={0}
+        >
+          {focused ? (
+            <TextField.Input
+              autoFocus
+              placeholder={"New todo"}
+              value={text}
+              onKeyDown={(e) => {
+                if (e.code === "Enter" && !!text) {
+                  onInsert();
+                }
+                if (e.code === "Backspace" && !text) {
+                  onDelete();
+                }
+              }}
+              onChange={(e) => onTextChange(e.target.value)}
+            />
+          ) : (
+            <Text
+              className={checked ? "line-through text-gray-500" : ""}
+              size={"2"}
+            >
+              {text}
+            </Text>
+          )}
+        </TextField.Root>
+      </Flex>
       <IconButton
-        variant={"outline"}
-        className={"cursor-pointer opacity-0 group-hover:opacity-100 "}
+        className={"opacity-0 group-hover:opacity-100"}
+        variant={"ghost"}
+        onClick={onDelete}
       >
-        <Trash2 onClick={onDelete} width="18" height="18" />
+        <Trash2 width={"16"} height={"16"} />
       </IconButton>
     </Flex>
   );
