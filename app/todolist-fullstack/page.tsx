@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { useState } from "react";
-import { Button, Heading } from "@radix-ui/themes";
+import { Button, Heading, Text } from "@radix-ui/themes";
 import { Todo } from "./Todo";
 import { PlusIcon } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -12,8 +12,9 @@ import {
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
 import { useTodos } from "./useTodos";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-export default function Demo() {
+function TodoPage() {
   const {
     todos,
     toggleTodoChecked,
@@ -21,6 +22,8 @@ export default function Demo() {
     changeTodoText,
     addTodo,
     reorderTodo,
+    status,
+    variables,
   } = useTodos();
   const [focusedTodoId, setFocusedTodoId] = useState<string>();
 
@@ -61,6 +64,8 @@ export default function Demo() {
       <Heading as={"h1"} size={"8"} mb={"4"}>
         Todos
       </Heading>
+      <pre>variables={JSON.stringify({ variables })}</pre>
+      {status === "pending" && <Text>Loading</Text>}
       <DragDropContext onDragEnd={onDragEng}>
         <Droppable droppableId={"droppable"}>
           {(provided) => (
@@ -113,5 +118,15 @@ export default function Demo() {
         <PlusIcon width={"16"} height={"16"} /> Add Todo
       </Button>
     </div>
+  );
+}
+
+export default function TodosFullstack() {
+  const [queryClient] = React.useState(() => new QueryClient());
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TodoPage />
+    </QueryClientProvider>
   );
 }

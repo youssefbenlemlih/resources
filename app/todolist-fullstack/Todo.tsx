@@ -15,7 +15,7 @@ type TodoProps = {
   onInsert: () => void;
 };
 export const Todo = ({
-  todo: { checked, text },
+  todo: { checked, text, isCheckPending },
   onTextChange,
   onCheckedChange,
   focused,
@@ -39,7 +39,10 @@ export const Todo = ({
             height={"16"}
           />
         </div>
-        <Checkbox onCheckedChange={() => onCheckedChange()} checked={checked} />
+        <Checkbox
+          onCheckedChange={() => onCheckedChange()}
+          checked={isCheckPending ? "indeterminate" : checked}
+        />
         <TextField.Root
           onFocus={() => onFocusChange(true)}
           onBlurCapture={() => {

@@ -1,6 +1,9 @@
+"use client";
 import { useState } from "react";
 import { TodoItem } from "./todoItem";
 import { v4 } from "uuid";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Configuration, TodosControllerApi } from "todos-api";
 
 const reorder = <T>(list: T[], startIndex: number, endIndex: number) => {
   const result = Array.from(list);
@@ -9,10 +12,44 @@ const reorder = <T>(list: T[], startIndex: number, endIndex: number) => {
 
   return result;
 };
+const client = new TodosControllerApi(
+  new Configuration({ basePath: "http://localhost:8080" }),
+);
 export const useTodos = () => {
-  const [todos, setTodos] = useState<TodoItem[]>([]);
+  const { data: todosData, status } = useQuery({
+    queryKey: ["todos"],
+    queryFn: async () => await client.getTodos(),
+  });
+  const [_, setTodos] = useState<TodoItem[]>([]);
+  const [pendingTodoCheckingIds, setPendingTodoCheckingIds] = useState<
+    string[]
+  >([]);
+  const todos = ((todosData?.todos || []) as TodoItem[]).map((todo) => {
+    if (pendingTodoCheckingIds.includes(todo.id)) {
+      return { ...todo, isCheckPending: true };
+    } else {
+      return todo;
+    }
+  });
+  const { mutate: checkTodo } = useMutation({
+    mutationFn: async (id: string) => {
+      if (pendingTodoCheckingIds.includes(id)) {
+        await new Promise((resolve) => setTimeout(resolve, 10 * 1000));
+      }
+    },
+    onMutate: (variables) =>
+      setPendingTodoCheckingIds((pendingTodoCheckingIds) => [
+        ...pendingTodoCheckingIds,
+        variables,
+      ]),
+    onSettled: (_data, _error, variables) =>
+      setPendingTodoCheckingIds((pendingTodoCheckingIds) =>
+        pendingTodoCheckingIds.filter((id) => id !== variables),
+      ),
+  });
 
   function toggleTodoChecked(id: string) {
+    checkTodo(id);
     setTodos(
       todos.map((todo) =>
         id === todo.id
@@ -67,5 +104,7 @@ export const useTodos = () => {
     addTodo,
     deleteTodo,
     reorderTodo,
+    status,
+    variables: pendingTodoCheckingIds,
   };
 };
