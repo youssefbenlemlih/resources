@@ -8,12 +8,14 @@ import {
   Flex,
   Grid,
   Heading,
+  Link,
   Text,
 } from "@radix-ui/themes";
 import { AnimatePresence, motion } from "framer-motion";
 
 type Post = {
   id: string;
+  href: string;
   title: string;
   description: string;
   tags: Tag[];
@@ -24,24 +26,28 @@ type Tag = "git" | "react" | "nextjs" | "nodejs";
 const posts: Post[] = [
   {
     id: "nextjs-fonts",
+    href: "https://www.youssefbee.com/posts/custom-font-nextjs-tailwind",
     title: "Add Fonts To Your NextJS And Tailwind App",
     description: "Easily use custom fonts with Tailwind in your NextJS app.",
     tags: ["react", "nextjs"],
   },
   {
     id: "update-npm-packages",
+    href: "https://www.youssefbee.com/posts/update-all-npm-packages",
     title: "Update All NPM Packages",
     description: "A compact guide to easily update all your npm dependencies.",
     tags: ["react", "nodejs"],
   },
   {
     id: "git-cheat-sheet",
+    href: "https://www.youssefbee.com/posts/git-cheat-sheet",
     title: "Git Cheat Sheet (Free PDF)",
     description: "A collection of must know git commands.",
     tags: ["git"],
   },
   {
     id: "git-merge-vs-rebase",
+    href: "https://www.youssefbee.com/posts/git-merge-vs-rebase",
     title: "Git Merge vs Rebase: Which SHOULD you use?",
     description:
       "GIT Merge vs. Rebase is one of GIT's most debated topics... Luckily, there are a few rules to help you choose the right approach.",
@@ -49,6 +55,7 @@ const posts: Post[] = [
   },
   {
     id: "react-array-map",
+    href: "https://www.youssefbee.com/posts/react-map",
     title: "Understanding Array.map in React",
     description:
       "Learn how to use the map function in React to render dynamic content.",
@@ -56,7 +63,7 @@ const posts: Post[] = [
   },
 ];
 
-const tags: Tag[] = ["react", "nextjs", "git"];
+const tags: Tag[] = ["git", "react", "nextjs", "nodejs"];
 
 /**
  * # Solved Problems
@@ -148,15 +155,17 @@ const PostCard = ({ post }: PostCardProps) => (
     animate={{ opacity: 1, height: "auto" }}
     exit={{ opacity: 0, height: 0 }}
   >
-    <Heading size="3">{post.title}</Heading>
-    <Text size="2" color={"gray"}>
-      {post.description}
-    </Text>
-    <Flex py={"1"} gap={"2"}>
-      {post.tags.map((tag) => (
-        <Badge key={tag}>{tag}</Badge>
-      ))}
-    </Flex>
+    <Link href={post.href} target={"_blank"}>
+      <Heading size="3">{post.title}</Heading>
+      <Text size="2" color={"gray"}>
+        {post.description}
+      </Text>
+      <Flex py={"1"} gap={"2"}>
+        {post.tags.map((tag) => (
+          <Badge key={tag}>{tag}</Badge>
+        ))}
+      </Flex>
+    </Link>
   </AnimatedCard>
 );
 const AnimatedCard = motion(Card);
