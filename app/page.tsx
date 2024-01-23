@@ -11,6 +11,9 @@ export default function Home() {
         <li>
           <Link href={"./todolist"}>Todo App</Link>
         </li>
+        <li>
+          <Link href={"./enums"}>Enums</Link>
+        </li>
       </ul>
       <br />
       <Text>More coming soon ;)</Text>

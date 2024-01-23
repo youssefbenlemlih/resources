@@ -3,7 +3,7 @@ import * as React from "react";
 import { useState } from "react";
 import { Button, Heading } from "@radix-ui/themes";
 import { TodoItem } from "./todoItem";
-import { Todo } from "./Todo";
+import { Todo } from "./todo";
 import { PlusIcon } from "lucide-react";
 import { v4 } from "uuid";
 import { AnimatePresence, motion } from "framer-motion";
